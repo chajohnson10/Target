@@ -112,20 +112,19 @@ public class Search {
 			int count = 0;
 			try {
 				fileRead = new Scanner(f);
+				int i = 0;
 				while(fileRead.hasNext()) {
 					//normalize words as they're read and iterate over them as they appear
 					String s = fileRead.next().replaceAll("[^a-zA-Z0-9]", "");
 					s = s.toLowerCase();
-					for(int i = 0; i < splitTerm.length; i++) {
-						if(!splitTerm[i].equals(s)) {
-							break;
-						}else if(splitTerm[i].equals(s)) {
-							if(i == splitTerm.length - 1) {
-								count++;
-							}else {
-								s = fileRead.next().replaceAll("[^a-zA-Z0-9]", "");
-								s = s.toLowerCase();
-							}
+					if(!splitTerm[i].equals(s)) {
+						i = 0;
+					}else{
+						if(i == splitTerm.length - 1) {
+							count++;
+							i = 0;
+						}else{
+							i++;
 						}
 					}
 				}
@@ -173,11 +172,15 @@ public class Search {
 					//otherwise move to instance and iterate over subsequent words
 					for(int index : indices) {
 						for(int j = 1; j < splitTerm.length; j++) {
-							String s = texts.get(i).get(index + j);
-							if(!splitTerm[j].equals(s)) {
+							if(index + j < texts.get(i).size()) {
+								String s = texts.get(i).get(index + j);
+								if(!splitTerm[j].equals(s)) {
+									break;
+								}else if(splitTerm[j].equals(s) && j == splitTerm.length - 1) {
+									count++;
+								}
+							}else {
 								break;
-							}else if(splitTerm[j].equals(s) && j == splitTerm.length - 1) {
-								count++;
 							}
 						}
 					}
